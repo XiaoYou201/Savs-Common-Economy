@@ -86,7 +86,7 @@ public class EconomyCommands {
         EconomyManager.getInstance().getOrCreateAccount(player.getUUID(), player.getGameProfile().name())
             .thenAccept(account -> {
                 BigDecimal balance = account.getBalance();
-                context.getSource().sendSuccess(() -> Component.literal("Your balance: " + EconomyManager.getInstance().format(balance)), false);
+                context.getSource().sendSuccess(() -> Component.literal("你的余额:" + EconomyManager.getInstance().format(balance)), false);
             });
         return 1;
     }
@@ -96,13 +96,13 @@ public class EconomyCommands {
         
         lookupUUID(context, targetName).thenAccept(targetUUID -> {
             if (targetUUID == null) {
-                context.getSource().sendFailure(Component.literal("Player not found in economy database."));
+                context.getSource().sendFailure(Component.literal("经济数据库中未找到该玩家。"));
                 return;
             }
 
             EconomyManager.getInstance().getOrCreateAccount(targetUUID, null).thenAccept(account -> {
                 BigDecimal balance = account.getBalance();
-                context.getSource().sendSuccess(() -> Component.literal(account.getName() + "'s balance: " + EconomyManager.getInstance().format(balance)), false);
+                context.getSource().sendSuccess(() -> Component.literal(account.getName() + " 的余额:" + EconomyManager.getInstance().format(balance)), false);
             });
         });
         
@@ -116,12 +116,12 @@ public class EconomyCommands {
 
         lookupUUID(context, targetName).thenAccept(targetUUID -> {
             if (targetUUID == null) {
-                context.getSource().sendFailure(Component.literal("Player not found in economy database."));
+                context.getSource().sendFailure(Component.literal("经济数据库中未找到该玩家。"));
                 return;
             }
 
             if (sender.getUUID().equals(targetUUID)) {
-                context.getSource().sendFailure(Component.literal("You cannot pay yourself."));
+                context.getSource().sendFailure(Component.literal("你不能向自己转账。"));
                 return;
             }
 
@@ -129,17 +129,17 @@ public class EconomyCommands {
                 if (success) {
                     EconomyManager.getInstance().addBalance(targetUUID, amount).thenAccept(addSuccess -> {
                         String formatted = EconomyManager.getInstance().format(amount);
-                        context.getSource().sendSuccess(() -> Component.literal("Paid " + formatted + " to " + targetName), false);
+                        context.getSource().sendSuccess(() -> Component.literal("已向 " + targetName + " 转账 " + formatted), false);
                         
                         ServerPlayer targetPlayer = context.getSource().getServer().getPlayerList().getPlayer(targetUUID);
                         if (targetPlayer != null) {
-                            targetPlayer.sendSystemMessage(Component.literal("Received " + formatted + " from " + sender.getName().getString()));
+                            targetPlayer.sendSystemMessage(Component.literal("收到来自 " + sender.getName().getString() + " 的 " + formatted));
                         }
                         
                         TransactionLogger.log("PAY", sender.getName().getString(), targetName, amount, "Player Payment");
                     });
                 } else {
-                    context.getSource().sendFailure(Component.literal("Insufficient funds."));
+                    context.getSource().sendFailure(Component.literal("余额不足。"));
                 }
             });
         });
@@ -165,18 +165,18 @@ public class EconomyCommands {
                     note.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
                     
                     note.set(DataComponents.CUSTOM_NAME, 
-                        Component.literal("Bank Note: " + EconomyManager.getInstance().format(amount))
+                        Component.literal("银行券:" + EconomyManager.getInstance().format(amount))
                             .withStyle(net.minecraft.ChatFormatting.GREEN));
 
                     if (!sender.getInventory().add(note)) {
                         sender.drop(note, false);
                     }
                     
-                    context.getSource().sendSuccess(() -> Component.literal("Withdrew " + EconomyManager.getInstance().format(amount) + " as a bank note."), false);
+                    context.getSource().sendSuccess(() -> Component.literal("已提取 " + EconomyManager.getInstance().format(amount) + " 为银行券。"), false);
                     TransactionLogger.log("WITHDRAW", sender.getName().getString(), "Bank Note", amount, "Withdrawal");
                 });
             } else {
-                context.getSource().sendFailure(Component.literal("Insufficient funds."));
+                context.getSource().sendFailure(Component.literal("余额不足。"));
             }
         });
         
@@ -185,11 +185,11 @@ public class EconomyCommands {
 
     private static int balTop(CommandContext<CommandSourceStack> context) {
         EconomyManager.getInstance().getTopAccounts(10).thenAccept(top -> {
-            context.getSource().sendSuccess(() -> Component.literal("--- Top 10 Balances ---"), false);
+            context.getSource().sendSuccess(() -> Component.literal("--- 余额排行榜 前10 ---"), false);
             for (int i = 0; i < top.size(); i++) {
                 AccountData account = top.get(i);
                 int rank = i + 1;
-                context.getSource().sendSuccess(() -> Component.literal(rank + ". " + account.getName() + ": " + EconomyManager.getInstance().format(account.getBalance())), false);
+                context.getSource().sendSuccess(() -> Component.literal(rank + ". " + account.getName() + ":" + EconomyManager.getInstance().format(account.getBalance())), false);
             }
         });
         return 1;

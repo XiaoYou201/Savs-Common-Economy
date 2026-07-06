@@ -59,13 +59,13 @@ public class ShopCommands {
         ItemStack heldItem = player.getMainHandItem();
 
         if (heldItem.isEmpty()) {
-            context.getSource().sendFailure(Component.literal("§cYou must hold an item to create a shop!"));
+            context.getSource().sendFailure(Component.literal("§c创建商店前必须手持一个物品!"));
             return 0;
         }
 
         HitResult hit = player.pick(5.0, 0.0f, false);
         if (hit.getType() != HitResult.Type.BLOCK) {
-            context.getSource().sendFailure(Component.literal("§cYou must look at a chest!"));
+            context.getSource().sendFailure(Component.literal("§c你必须看向一个箱子!"));
             return 0;
         }
 
@@ -73,12 +73,12 @@ public class ShopCommands {
         BlockEntity be = player.level().getBlockEntity(pos);
 
         if (!(be instanceof Container)) {
-            context.getSource().sendFailure(Component.literal("§cYou must look at a chest or container!"));
+            context.getSource().sendFailure(Component.literal("§c你必须看向一个箱子或容器!"));
             return 0;
         }
 
         if (ShopManager.getInstance().getShop(pos) != null) {
-            context.getSource().sendFailure(Component.literal("§cA shop already exists here!"));
+            context.getSource().sendFailure(Component.literal("§c这里已经有一个商店了!"));
             return 0;
         }
 
@@ -86,9 +86,9 @@ public class ShopCommands {
         Shop shop = ShopManager.getInstance().createShop(pos, worldId, player.getUUID(), player.getName().getString(), heldItem.copy(), price, buying, ShopType.PLAYER);
 
         if (ShopSignHelper.placeSign(player.level(), pos, shop, player.getDirection())) {
-            context.getSource().sendSuccess(() -> Component.literal("§aShop created successfully!"), false);
+            context.getSource().sendSuccess(() -> Component.literal("§a商店创建成功!"), false);
         } else {
-            context.getSource().sendSuccess(() -> Component.literal("§eShop created, but failed to place sign. Place one manually."), false);
+            context.getSource().sendSuccess(() -> Component.literal("§e商店已创建,但告示牌放置失败,请手动放置。"), false);
         }
 
         return 1;
@@ -98,7 +98,7 @@ public class ShopCommands {
         ServerPlayer player = context.getSource().getPlayerOrException();
         HitResult hit = player.pick(5.0, 0.0f, false);
         if (hit.getType() != HitResult.Type.BLOCK) {
-            context.getSource().sendFailure(Component.literal("§cLook at a shop sign or chest."));
+            context.getSource().sendFailure(Component.literal("§c请看向商店告示牌或箱子。"));
             return 0;
         }
 
@@ -110,18 +110,18 @@ public class ShopCommands {
         }
 
         if (initialShop == null) {
-            context.getSource().sendFailure(Component.literal("§cNo shop found at this location."));
+            context.getSource().sendFailure(Component.literal("§c此处没有找到商店。"));
             return 0;
         }
 
         final Shop shop = initialShop;
 
-        context.getSource().sendSuccess(() -> Component.literal("§6--- Shop info ---"), false);
-        context.getSource().sendSuccess(() -> Component.literal("§eOwner: §f" + shop.getOwnerName()), false);
-        context.getSource().sendSuccess(() -> Component.literal("§eItem: §f" + shop.getItem().getHoverName().getString()), false);
-        context.getSource().sendSuccess(() -> Component.literal("§ePrice: §f" + EconomyManager.getInstance().format(shop.getPrice())), false);
-        context.getSource().sendSuccess(() -> Component.literal("§eType: §f" + (shop.isBuying() ? "Buy" : "Sell")), false);
-        context.getSource().sendSuccess(() -> Component.literal("§eStock: §f" + (shop.isAdmin() ? "Unlimited" : shop.getStock())), false);
+        context.getSource().sendSuccess(() -> Component.literal("§6--- 商店信息 ---"), false);
+        context.getSource().sendSuccess(() -> Component.literal("§e店主: §f" + shop.getOwnerName()), false);
+        context.getSource().sendSuccess(() -> Component.literal("§e物品: §f" + shop.getItem().getHoverName().getString()), false);
+        context.getSource().sendSuccess(() -> Component.literal("§e价格: §f" + EconomyManager.getInstance().format(shop.getPrice())), false);
+        context.getSource().sendSuccess(() -> Component.literal("§e类型: §f" + (shop.isBuying() ? "收购" : "出售")), false);
+        context.getSource().sendSuccess(() -> Component.literal("§e库存: §f" + (shop.isAdmin() ? "无限" : shop.getStock())), false);
 
         return 1;
     }
@@ -131,13 +131,13 @@ public class ShopCommands {
         Collection<Shop> shops = ShopManager.getInstance().getPlayerShops(player.getUUID());
 
         if (shops.isEmpty()) {
-            context.getSource().sendSuccess(() -> Component.literal("§eYou don't own any shops."), false);
+            context.getSource().sendSuccess(() -> Component.literal("§e你还没有任何商店。"), false);
             return 1;
         }
 
-        context.getSource().sendSuccess(() -> Component.literal("§6--- Your Shops ---"), false);
+        context.getSource().sendSuccess(() -> Component.literal("§6--- 你的商店 ---"), false);
         for (Shop shop : shops) {
-            context.getSource().sendSuccess(() -> Component.literal("§e" + shop.getItem().getHoverName().getString() + " at " + shop.getChestLocation().toShortString()), false);
+            context.getSource().sendSuccess(() -> Component.literal("§e" + shop.getItem().getHoverName().getString() + " 位于 " + shop.getChestLocation().toShortString()), false);
         }
         return 1;
     }
@@ -152,7 +152,7 @@ public class ShopCommands {
         if (shop != null) {
             shop.setType(ShopType.ADMIN);
             ShopManager.getInstance().save();
-            context.getSource().sendSuccess(() -> Component.literal("§aShop converted to ADMIN shop."), true);
+            context.getSource().sendSuccess(() -> Component.literal("§a商店已转为管理员商店。"), true);
             ShopSignHelper.updateSign((net.minecraft.server.level.ServerLevel)player.level(), ShopSignHelper.findSignForChest(player.level(), pos), shop);
         }
         return 1;
@@ -163,10 +163,10 @@ public class ShopCommands {
         UUID uuid = player.getUUID();
         if (removeModePlayers.contains(uuid)) {
             removeModePlayers.remove(uuid);
-            context.getSource().sendSuccess(() -> Component.literal("§eExit remove mode."), false);
+            context.getSource().sendSuccess(() -> Component.literal("§e已退出移除模式。"), false);
         } else {
             removeModePlayers.add(uuid);
-            context.getSource().sendSuccess(() -> Component.literal("§6Entered REMOVE MODE. Right-click a shop sign to remove it."), false);
+            context.getSource().sendSuccess(() -> Component.literal("§6已进入移除模式。右键点击商店告示牌即可移除。"), false);
         }
         return 1;
     }

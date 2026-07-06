@@ -20,11 +20,11 @@ public class ShopTransactionHandler {
             int amount) {
         if (amount <= 0) {
             if (!shop.isAdmin() && !shop.canSell(1)) {
-                player.sendSystemMessage(Component.literal("§cShop is out of stock!"));
+                player.sendSystemMessage(Component.literal("§c商店库存不足!"));
             } else if (getAvailableSpace(player, shop.getItem()) == 0) {
-                player.sendSystemMessage(Component.literal("§cYou do not have enough inventory space!"));
+                player.sendSystemMessage(Component.literal("§c你的背包空间不足!"));
             } else {
-                player.sendSystemMessage(Component.literal("§cInsufficient funds!"));
+                player.sendSystemMessage(Component.literal("§c余额不足!"));
             }
             return;
         }
@@ -34,13 +34,13 @@ public class ShopTransactionHandler {
 
         // 1. Initial Checks (Main Thread)
         if (!shop.isAdmin() && !shop.canSell(amount)) {
-            player.sendSystemMessage(Component.literal("§cShop is out of stock!"));
+            player.sendSystemMessage(Component.literal("§c商店库存不足!"));
             return;
         }
 
         int availableSpace = getAvailableSpace(player, shop.getItem());
         if (availableSpace < amount) {
-            player.sendSystemMessage(Component.literal("§cYou do not have enough inventory space!"));
+            player.sendSystemMessage(Component.literal("§c你的背包空间不足!"));
             return;
         }
 
@@ -55,8 +55,8 @@ public class ShopTransactionHandler {
                             EconomyManager.getInstance().addBalance(shop.getOwnerId(), totalCost);
                         }
                         String itemName = shop.getItem().getHoverName().getString();
-                        player.sendSystemMessage(Component.literal("§aBought " + amount + "x " + itemName + " for "
-                                + EconomyManager.getInstance().format(totalCost) + "."));
+                        player.sendSystemMessage(Component.literal("§a已购买 " + amount + "个 " + itemName + ",花费 "
+                                + EconomyManager.getInstance().format(totalCost) + "。"));
 
                         BlockPos signPos = ShopSignHelper.findSignForChest(world, shop.getChestLocation());
                         if (signPos != null) {
@@ -66,12 +66,12 @@ public class ShopTransactionHandler {
                     } else {
                         // Refund on failure
                         EconomyManager.getInstance().addBalance(player.getUUID(), totalCost);
-                        player.sendSystemMessage(Component.literal("§cTransaction failed! Item transfer error."));
+                        player.sendSystemMessage(Component.literal("§c交易失败!物品转移出错。"));
                     }
                 });
             } else {
                 player.sendSystemMessage(Component.literal(
-                        "§cInsufficient funds! (Need " + EconomyManager.getInstance().format(totalCost) + ")"));
+                        "§c余额不足!(需要 " + EconomyManager.getInstance().format(totalCost) + ")"));
             }
         });
     }
@@ -119,14 +119,14 @@ public class ShopTransactionHandler {
         }
 
         if (amount <= 0) {
-            player.sendSystemMessage(Component.literal("§cYou don't have the required items!"));
+            player.sendSystemMessage(Component.literal("§c你没有足够的所需物品!"));
             return;
         }
 
         if (!shop.isAdmin()) {
             int availableSpace = ShopStockCalculator.calculateStock(world, shop);
             if (availableSpace < amount) {
-                player.sendSystemMessage(Component.literal("§cThe shop does not have enough storage space!"));
+                player.sendSystemMessage(Component.literal("§c商店的存储空间不足!"));
                 return;
             }
         }
@@ -139,7 +139,7 @@ public class ShopTransactionHandler {
             if (finalizeSale(player, shop, world, amount)) {
                 EconomyManager.getInstance().addBalance(player.getUUID(), totalPayout);
                 String itemName = shop.getItem().getHoverName().getString();
-                player.sendSystemMessage(Component.literal("§aSold " + amount + "x " + itemName + " to Admin Shop for "
+                player.sendSystemMessage(Component.literal("§a已向管理员商店出售 " + amount + "个 " + itemName + ",获得 "
                         + EconomyManager.getInstance().format(totalPayout) + "!"));
             }
         } else {
@@ -152,8 +152,8 @@ public class ShopTransactionHandler {
                             EconomyManager.getInstance().addBalance(player.getUUID(), finalPayout);
                             
                             String itemName = shop.getItem().getHoverName().getString();
-                            player.sendSystemMessage(Component.literal("§aSold " + finalAmount + "x " + itemName
-                                    + " to shop for " + EconomyManager.getInstance().format(finalPayout) + "."));
+                            player.sendSystemMessage(Component.literal("§a已向商店出售 " + finalAmount + "个 " + itemName
+                                    + ",获得 " + EconomyManager.getInstance().format(finalPayout) + "。"));
 
                             BlockPos signPos = ShopSignHelper.findSignForChest(world, shop.getChestLocation());
                             if (signPos != null) {
@@ -163,11 +163,11 @@ public class ShopTransactionHandler {
                         } else {
                             // Refund shop owner on failure
                             EconomyManager.getInstance().addBalance(shop.getOwnerId(), finalPayout);
-                            player.sendSystemMessage(Component.literal("§cTransaction failed! Shop inventory error."));
+                            player.sendSystemMessage(Component.literal("§c交易失败!商店库存出错。"));
                         }
                     });
                 } else {
-                    player.sendSystemMessage(Component.literal("§cShop owner is out of funds!"));
+                    player.sendSystemMessage(Component.literal("§c店主资金不足!"));
                 }
             });
         }

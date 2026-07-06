@@ -17,7 +17,7 @@ public class ShopSignHelper {
     public static void updateSign(net.minecraft.server.level.ServerLevel world, BlockPos pos, Shop shop) {
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof SignBlockEntity sign) {
-            String action = shop.isBuying() ? "Buying" : "Selling";
+            String action = shop.isBuying() ? "收购" : "出售";
             String itemName = shop.getItem().getHoverName().getString();
             if (itemName.length() > 15) {
                 itemName = itemName.substring(0, 12) + "...";
@@ -28,14 +28,14 @@ public class ShopSignHelper {
             
             String stockText;
             if (stock == -1) {
-                stockText = "Stock: ∞";
+                stockText = "库存: ∞";
             } else {
-                stockText = (shop.isBuying() ? "Space: " : "Stock: ") + stock;
+                stockText = (shop.isBuying() ? "余量: " : "库存: ") + stock;
                 shop.setStock(stock);
             }
 
             Component header = shop.isAdmin() ? 
-                    Component.literal("§4[Admin Shop]") : 
+                    Component.literal("§4[管理员商店]") : 
                     Component.literal("§1" + shop.getOwnerName());
 
             sign.setText(sign.getFrontText()

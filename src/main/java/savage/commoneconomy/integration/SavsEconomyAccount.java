@@ -74,7 +74,7 @@ public class SavsEconomyAccount implements EconomyAccount {
         if (currency instanceof SavsEconomyCurrency ecoCurrency) {
             sendFeedback("§e[Economy] §a+" + ecoCurrency.formatValue(value, true));
         }
-        return new EconomyTransaction.Simple(true, Component.literal("Success"), next, current, value, this);
+        return new EconomyTransaction.Simple(true, Component.literal("成功"), next, current, value, this);
     }
 
     @Override
@@ -86,9 +86,9 @@ public class SavsEconomyAccount implements EconomyAccount {
             if (currency instanceof SavsEconomyCurrency ecoCurrency) {
                 sendFeedback("§e[Economy] §c-" + ecoCurrency.formatValue(value, true));
             }
-            return new EconomyTransaction.Simple(true, Component.literal("Success"), next, current, value.negate(), this);
+            return new EconomyTransaction.Simple(true, Component.literal("成功"), next, current, value.negate(), this);
         } else {
-            return new EconomyTransaction.Simple(false, Component.literal("Insufficient funds"), current, current, value.negate(), this);
+            return new EconomyTransaction.Simple(false, Component.literal("余额不足"), current, current, value.negate(), this);
         }
     }
 
@@ -110,15 +110,15 @@ public class SavsEconomyAccount implements EconomyAccount {
     public EconomyTransaction canDecreaseBalance(BigInteger value) {
         BigInteger current = balance();
         if (current.compareTo(value) >= 0) {
-            return new EconomyTransaction.Simple(true, Component.literal("Success"), current.subtract(value), current, value.negate(), this);
+            return new EconomyTransaction.Simple(true, Component.literal("成功"), current.subtract(value), current, value.negate(), this);
         } else {
-            return new EconomyTransaction.Simple(false, Component.literal("Insufficient funds"), current, current, value.negate(), this);
+            return new EconomyTransaction.Simple(false, Component.literal("余额不足"), current, current, value.negate(), this);
         }
     }
 
     @Override
     public EconomyTransaction canIncreaseBalance(BigInteger value) {
         BigInteger current = balance();
-        return new EconomyTransaction.Simple(true, Component.literal("Success"), current.add(value), current, value, this);
+        return new EconomyTransaction.Simple(true, Component.literal("成功"), current.add(value), current, value, this);
     }
 }

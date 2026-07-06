@@ -40,7 +40,7 @@ public class BankNoteListener {
                             EconomyManager.getInstance().addBalance(player.getUUID(), value).thenAccept(success -> {
                                 server.execute(() -> {
                                     if (success) {
-                                        player.sendSystemMessage(Component.literal("Redeemed bank note for " + EconomyManager.getInstance().format(value))
+                                        player.sendSystemMessage(Component.literal("已兑换银行券,获得 " + EconomyManager.getInstance().format(value))
                                             .withStyle(ChatFormatting.GREEN));
                                         TransactionLogger.log("DEPOSIT", "Bank Note", player.getName().getString(), value, "Redeemed Note");
                                     } else {
@@ -51,12 +51,12 @@ public class BankNoteListener {
                                         restoreTag.putDouble("Value", valueDouble);
                                         restored.set(DataComponents.CUSTOM_DATA, CustomData.of(restoreTag));
                                         restored.set(DataComponents.CUSTOM_NAME,
-                                            Component.literal("Bank Note: " + EconomyManager.getInstance().format(value))
+                                            Component.literal("银行券:" + EconomyManager.getInstance().format(value))
                                                 .withStyle(ChatFormatting.GREEN));
                                         if (!player.getInventory().add(restored)) {
                                             player.drop(restored, false);
                                         }
-                                        player.sendSystemMessage(Component.literal("Failed to deposit bank note! Note has been returned.")
+                                        player.sendSystemMessage(Component.literal("银行券存入失败!已退还。")
                                             .withStyle(ChatFormatting.RED));
                                     }
                                 });

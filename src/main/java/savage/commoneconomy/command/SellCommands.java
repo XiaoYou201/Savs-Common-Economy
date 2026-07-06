@@ -59,7 +59,7 @@ public class SellCommands {
         ItemStack stack = player.getMainHandItem();
 
         if (stack.isEmpty()) {
-            context.getSource().sendFailure(Component.literal("You are not holding any item."));
+            context.getSource().sendFailure(Component.literal("你手上没有拿任何物品。"));
             return 0;
         }
 
@@ -67,12 +67,12 @@ public class SellCommands {
         BigDecimal price = EconomyManager.getInstance().getSellPrice(itemId);
 
         if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            context.getSource().sendFailure(Component.literal("This item cannot be sold."));
+            context.getSource().sendFailure(Component.literal("该物品无法出售。"));
             return 0;
         }
 
         BigDecimal stackValue = price.multiply(BigDecimal.valueOf(stack.getCount()));
-        context.getSource().sendSuccess(() -> Component.literal("Worth of " + stack.getCount() + "x " + itemId + ": " + EconomyManager.getInstance().format(stackValue) + " (" + EconomyManager.getInstance().format(price) + " each)"), false);
+        context.getSource().sendSuccess(() -> Component.literal(stack.getCount() + "个 " + itemId + " 的价值:" + EconomyManager.getInstance().format(stackValue) + "(每个 " + EconomyManager.getInstance().format(price) + ")"), false);
         return 1;
     }
 
@@ -81,7 +81,7 @@ public class SellCommands {
         ItemStack handStack = player.getMainHandItem();
 
         if (handStack.isEmpty()) {
-            context.getSource().sendFailure(Component.literal("You are not holding any item."));
+            context.getSource().sendFailure(Component.literal("你手上没有拿任何物品。"));
             return 0;
         }
 
@@ -89,7 +89,7 @@ public class SellCommands {
         BigDecimal price = EconomyManager.getInstance().getSellPrice(itemId);
 
         if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            context.getSource().sendFailure(Component.literal("This item cannot be sold."));
+            context.getSource().sendFailure(Component.literal("该物品无法出售。"));
             return 0;
         }
 
@@ -103,7 +103,7 @@ public class SellCommands {
 
         BigDecimal totalValue = price.multiply(BigDecimal.valueOf(totalCount));
         int finalTotalCount = totalCount;
-        context.getSource().sendSuccess(() -> Component.literal("Worth of all " + finalTotalCount + "x " + itemId + " in inventory: " + EconomyManager.getInstance().format(totalValue)), false);
+        context.getSource().sendSuccess(() -> Component.literal("背包中全部 " + finalTotalCount + "个 " + itemId + " 的价值:" + EconomyManager.getInstance().format(totalValue)), false);
         return 1;
     }
 
@@ -116,11 +116,11 @@ public class SellCommands {
         allItems.addAll(buyPrices.keySet());
 
         if (allItems.isEmpty()) {
-            context.getSource().sendSuccess(() -> Component.literal("No items have a configured worth."), false);
+            context.getSource().sendSuccess(() -> Component.literal("尚未配置任何物品的价格。"), false);
             return 1;
         }
 
-        context.getSource().sendSuccess(() -> Component.literal("--- Item Worth ---").withStyle(net.minecraft.ChatFormatting.GOLD, net.minecraft.ChatFormatting.BOLD), false);
+        context.getSource().sendSuccess(() -> Component.literal("--- 物品价格表 ---").withStyle(net.minecraft.ChatFormatting.GOLD, net.minecraft.ChatFormatting.BOLD), false);
         for (String item : allItems) {
             BigDecimal sell = sellPrices.getOrDefault(item, BigDecimal.ZERO);
             BigDecimal buy = buyPrices.getOrDefault(item, BigDecimal.ZERO);
@@ -131,10 +131,10 @@ public class SellCommands {
             Component line = Component.literal("- ").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)
                 .append(Component.literal(item).withStyle(net.minecraft.ChatFormatting.AQUA))
                 .append(Component.literal(" | ").withStyle(net.minecraft.ChatFormatting.DARK_GRAY))
-                .append(Component.literal("Buy: ").withStyle(net.minecraft.ChatFormatting.YELLOW))
+                .append(Component.literal("买入: ").withStyle(net.minecraft.ChatFormatting.YELLOW))
                 .append(Component.literal(buyStr).withStyle(buy.compareTo(BigDecimal.ZERO) > 0 ? net.minecraft.ChatFormatting.GREEN : net.minecraft.ChatFormatting.DARK_RED))
                 .append(Component.literal(" | ").withStyle(net.minecraft.ChatFormatting.DARK_GRAY))
-                .append(Component.literal("Sell: ").withStyle(net.minecraft.ChatFormatting.YELLOW))
+                .append(Component.literal("卖出: ").withStyle(net.minecraft.ChatFormatting.YELLOW))
                 .append(Component.literal(sellStr).withStyle(sell.compareTo(BigDecimal.ZERO) > 0 ? net.minecraft.ChatFormatting.GREEN : net.minecraft.ChatFormatting.DARK_RED));
             
             context.getSource().sendSuccess(() -> line, false);
@@ -147,11 +147,11 @@ public class SellCommands {
         BigDecimal price = EconomyManager.getInstance().getSellPrice(itemId);
 
         if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            context.getSource().sendFailure(Component.literal("Item '" + itemId + "' cannot be sold or does not exist."));
+            context.getSource().sendFailure(Component.literal("物品「" + itemId + "」无法出售或不存在。"));
             return 0;
         }
 
-        context.getSource().sendSuccess(() -> Component.literal("Worth of " + itemId + ": " + EconomyManager.getInstance().format(price) + " each"), false);
+        context.getSource().sendSuccess(() -> Component.literal(itemId + " 的价格:每个 " + EconomyManager.getInstance().format(price)), false);
         return 1;
     }
 
@@ -160,7 +160,7 @@ public class SellCommands {
         ItemStack stack = player.getMainHandItem();
 
         if (stack.isEmpty()) {
-            context.getSource().sendFailure(Component.literal("You are not holding any item."));
+            context.getSource().sendFailure(Component.literal("你手上没有拿任何物品。"));
             return 0;
         }
 
@@ -168,7 +168,7 @@ public class SellCommands {
         BigDecimal price = EconomyManager.getInstance().getSellPrice(itemId);
 
         if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            context.getSource().sendFailure(Component.literal("This item cannot be sold."));
+            context.getSource().sendFailure(Component.literal("该物品无法出售。"));
             return 0;
         }
 
@@ -181,11 +181,11 @@ public class SellCommands {
                 // Must modify inventory on the main server thread
                 server1.execute(() -> {
                     player.getInventory().removeItem(stack); // In 26.1 use removeItem or set to Empty
-                    context.getSource().sendSuccess(() -> Component.literal("Sold " + count + "x " + itemId + " for " + EconomyManager.getInstance().format(totalValue)), false);
+                    context.getSource().sendSuccess(() -> Component.literal("已出售 " + count + "个 " + itemId + ",获得 " + EconomyManager.getInstance().format(totalValue)), false);
                     savage.commoneconomy.util.TransactionLogger.log("SELL", player.getName().getString(), "Server", totalValue, "Sold " + count + "x " + itemId);
                 });
             } else {
-                context.getSource().sendFailure(Component.literal("Transaction failed."));
+                context.getSource().sendFailure(Component.literal("交易失败。"));
             }
         });
 
@@ -197,7 +197,7 @@ public class SellCommands {
         ItemStack handStack = player.getMainHandItem();
 
         if (handStack.isEmpty()) {
-            context.getSource().sendFailure(Component.literal("You are not holding any item."));
+            context.getSource().sendFailure(Component.literal("你手上没有拿任何物品。"));
             return 0;
         }
 
@@ -205,7 +205,7 @@ public class SellCommands {
         BigDecimal price = EconomyManager.getInstance().getSellPrice(itemId);
 
         if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            context.getSource().sendFailure(Component.literal("This item cannot be sold."));
+            context.getSource().sendFailure(Component.literal("该物品无法出售。"));
             return 0;
         }
 
@@ -232,11 +232,11 @@ public class SellCommands {
                             player.getInventory().setItem(i, ItemStack.EMPTY);
                         }
                     }
-                    context.getSource().sendSuccess(() -> Component.literal("Sold all " + finalCount + "x " + itemId + " for " + EconomyManager.getInstance().format(totalValue)), false);
+                    context.getSource().sendSuccess(() -> Component.literal("已出售全部 " + finalCount + "个 " + itemId + ",获得 " + EconomyManager.getInstance().format(totalValue)), false);
                     savage.commoneconomy.util.TransactionLogger.log("SELL_ALL", player.getName().getString(), "Server", totalValue, "Sold all " + finalCount + "x " + itemId);
                 });
             } else {
-                context.getSource().sendFailure(Component.literal("Transaction failed."));
+                context.getSource().sendFailure(Component.literal("交易失败。"));
             }
         });
 
@@ -251,7 +251,7 @@ public class SellCommands {
                 .orElse(Items.AIR);
 
         if (item == Items.AIR) {
-             context.getSource().sendFailure(Component.literal("Item not found: " + itemInput));
+             context.getSource().sendFailure(Component.literal("未找到物品:" + itemInput));
              return 0;
         }
 
@@ -259,7 +259,7 @@ public class SellCommands {
         BigDecimal price = EconomyManager.getInstance().getBuyPrice(itemId);
 
         if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            context.getSource().sendFailure(Component.literal("This item is not for sale."));
+            context.getSource().sendFailure(Component.literal("该物品未上架出售。"));
             return 0;
         }
 
@@ -274,11 +274,11 @@ public class SellCommands {
                     if (!player.getInventory().add(stack)) {
                         player.drop(stack, false);
                     }
-                    context.getSource().sendSuccess(() -> Component.literal("Bought " + amount + "x " + itemId + " for " + EconomyManager.getInstance().format(totalCost)), false);
+                    context.getSource().sendSuccess(() -> Component.literal("已购买 " + amount + "个 " + itemId + ",花费 " + EconomyManager.getInstance().format(totalCost)), false);
                     savage.commoneconomy.util.TransactionLogger.log("BUY", "Server", player.getName().getString(), totalCost, "Bought " + amount + "x " + itemId);
                 });
             } else {
-                context.getSource().sendFailure(Component.literal("Insufficient funds! Cost: " + EconomyManager.getInstance().format(totalCost)));
+                context.getSource().sendFailure(Component.literal("余额不足!需要:" + EconomyManager.getInstance().format(totalCost)));
             }
         });
 

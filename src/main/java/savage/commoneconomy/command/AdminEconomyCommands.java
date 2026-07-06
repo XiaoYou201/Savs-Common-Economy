@@ -76,13 +76,13 @@ public class AdminEconomyCommands {
         
         lookupUUID(context, targetName).thenAccept(targetUUID -> {
             if (targetUUID == null) {
-                context.getSource().sendFailure(Component.literal("Player not found in economy database."));
+                context.getSource().sendFailure(Component.literal("经济数据库中未找到该玩家。"));
                 return;
             }
 
             EconomyManager.getInstance().addBalance(targetUUID, amount).thenAccept(success -> {
                 String formatted = EconomyManager.getInstance().format(amount);
-                context.getSource().sendSuccess(() -> Component.literal("Gave " + formatted + " to " + targetName), true);
+                context.getSource().sendSuccess(() -> Component.literal("已给予 " + targetName + " " + formatted), true);
                 
                 TransactionLogger.log("ADMIN_GIVE", context.getSource().getTextName(), targetName, amount, "Admin Gift");
                 notifyTarget(context, targetUUID, "Received " + formatted + " (Admin Gift)");
@@ -98,17 +98,17 @@ public class AdminEconomyCommands {
         
         lookupUUID(context, targetName).thenAccept(targetUUID -> {
             if (targetUUID == null) {
-                context.getSource().sendFailure(Component.literal("Player not found in economy database."));
+                context.getSource().sendFailure(Component.literal("经济数据库中未找到该玩家。"));
                 return;
             }
 
             EconomyManager.getInstance().removeBalance(targetUUID, amount).thenAccept(success -> {
                 if (success) {
                     String formatted = EconomyManager.getInstance().format(amount);
-                    context.getSource().sendSuccess(() -> Component.literal("Took " + formatted + " from " + targetName), true);
+                    context.getSource().sendSuccess(() -> Component.literal("已从 " + targetName + " 扣除 " + formatted), true);
                     TransactionLogger.log("ADMIN_TAKE", context.getSource().getTextName(), targetName, amount, "Admin Take");
                 } else {
-                    context.getSource().sendFailure(Component.literal("Target has insufficient funds to take this amount."));
+                    context.getSource().sendFailure(Component.literal("目标玩家余额不足,无法扣除该金额。"));
                 }
             });
         });
@@ -122,13 +122,13 @@ public class AdminEconomyCommands {
         
         lookupUUID(context, targetName).thenAccept(targetUUID -> {
             if (targetUUID == null) {
-                context.getSource().sendFailure(Component.literal("Player not found in economy database."));
+                context.getSource().sendFailure(Component.literal("经济数据库中未找到该玩家。"));
                 return;
             }
 
             EconomyManager.getInstance().setBalance(targetUUID, amount).thenAccept(v -> {
                 String formatted = EconomyManager.getInstance().format(amount);
-                context.getSource().sendSuccess(() -> Component.literal("Set " + targetName + "'s balance to " + formatted), true);
+                context.getSource().sendSuccess(() -> Component.literal("已将 " + targetName + " 的余额设为 " + formatted), true);
                 TransactionLogger.log("ADMIN_SET", context.getSource().getTextName(), targetName, amount, "Admin Set");
                 notifyTarget(context, targetUUID, "Your balance has been set to " + formatted + " by an admin.");
             });
@@ -142,7 +142,7 @@ public class AdminEconomyCommands {
         
         lookupUUID(context, targetName).thenAccept(targetUUID -> {
             if (targetUUID == null) {
-                context.getSource().sendFailure(Component.literal("Player not found in economy database."));
+                context.getSource().sendFailure(Component.literal("经济数据库中未找到该玩家。"));
                 return;
             }
 
@@ -152,7 +152,7 @@ public class AdminEconomyCommands {
                 // But if default balance is needed, we can just get it from config.
                 BigDecimal defaultBal = savage.commoneconomy.config.ConfigManager.getConfig().defaultBalance;
                 String formatted = EconomyManager.getInstance().format(defaultBal);
-                context.getSource().sendSuccess(() -> Component.literal("Reset " + targetName + "'s balance to " + formatted), true);
+                context.getSource().sendSuccess(() -> Component.literal("已将 " + targetName + " 的余额重置为 " + formatted), true);
                 TransactionLogger.log("ADMIN_RESET", context.getSource().getTextName(), targetName, defaultBal, "Admin Reset");
                 notifyTarget(context, targetUUID, "Your balance has been reset to " + formatted + " by an admin.");
             });
