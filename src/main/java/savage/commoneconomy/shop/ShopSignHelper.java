@@ -18,10 +18,7 @@ public class ShopSignHelper {
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof SignBlockEntity sign) {
             String action = shop.isBuying() ? "收购" : "出售";
-            String itemName = shop.getItem().getHoverName().getString();
-            if (itemName.length() > 15) {
-                itemName = itemName.substring(0, 12) + "...";
-            }
+            Component itemNameComponent = shop.getItem().getHoverName();
 
             String priceText = savage.commoneconomy.EconomyManager.getInstance().format(shop.getPrice());
             int stock = ShopStockCalculator.calculateStock(world, shop);
@@ -40,7 +37,7 @@ public class ShopSignHelper {
 
             sign.setText(sign.getFrontText()
                 .setMessage(0, header)
-                .setMessage(1, Component.literal(itemName))
+                .setMessage(1, itemNameComponent)
                 .setMessage(2, Component.literal("§0" + action + ": " + priceText))
                 .setMessage(3, Component.literal("§0" + stockText)), true);
             

@@ -118,7 +118,7 @@ public class ShopCommands {
 
         context.getSource().sendSuccess(() -> Component.literal("§6--- 商店信息 ---"), false);
         context.getSource().sendSuccess(() -> Component.literal("§e店主: §f" + shop.getOwnerName()), false);
-        context.getSource().sendSuccess(() -> Component.literal("§e物品: §f" + shop.getItem().getHoverName().getString()), false);
+        context.getSource().sendSuccess(() -> Component.literal("§e物品: §f").append(shop.getItem().getHoverName()), false);
         context.getSource().sendSuccess(() -> Component.literal("§e价格: §f" + EconomyManager.getInstance().format(shop.getPrice())), false);
         context.getSource().sendSuccess(() -> Component.literal("§e类型: §f" + (shop.isBuying() ? "收购" : "出售")), false);
         context.getSource().sendSuccess(() -> Component.literal("§e库存: §f" + (shop.isAdmin() ? "无限" : shop.getStock())), false);
@@ -137,7 +137,7 @@ public class ShopCommands {
 
         context.getSource().sendSuccess(() -> Component.literal("§6--- 你的商店 ---"), false);
         for (Shop shop : shops) {
-            context.getSource().sendSuccess(() -> Component.literal("§e" + shop.getItem().getHoverName().getString() + " 位于 " + shop.getChestLocation().toShortString()), false);
+            context.getSource().sendSuccess(() -> Component.literal("§e").append(shop.getItem().getHoverName()).append(Component.literal("§e 位于 " + shop.getChestLocation().toShortString())), false);
         }
         return 1;
     }

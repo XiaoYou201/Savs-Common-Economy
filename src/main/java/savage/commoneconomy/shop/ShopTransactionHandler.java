@@ -54,9 +54,10 @@ public class ShopTransactionHandler {
                         if (!shop.isAdmin()) {
                             EconomyManager.getInstance().addBalance(shop.getOwnerId(), totalCost);
                         }
-                        String itemName = shop.getItem().getHoverName().getString();
-                        player.sendSystemMessage(Component.literal("§a已购买 " + amount + "个 " + itemName + ",花费 "
-                                + EconomyManager.getInstance().format(totalCost) + "。"));
+                        player.sendSystemMessage(Component.literal("§a已购买 " + amount + "个 ")
+                                .append(shop.getItem().getHoverName())
+                                .append(Component.literal("§a,花费 "
+                                + EconomyManager.getInstance().format(totalCost) + "。")));
 
                         BlockPos signPos = ShopSignHelper.findSignForChest(world, shop.getChestLocation());
                         if (signPos != null) {
@@ -138,9 +139,10 @@ public class ShopTransactionHandler {
         if (shop.isAdmin()) {
             if (finalizeSale(player, shop, world, amount)) {
                 EconomyManager.getInstance().addBalance(player.getUUID(), totalPayout);
-                String itemName = shop.getItem().getHoverName().getString();
-                player.sendSystemMessage(Component.literal("§a已向管理员商店出售 " + amount + "个 " + itemName + ",获得 "
-                        + EconomyManager.getInstance().format(totalPayout) + "!"));
+                player.sendSystemMessage(Component.literal("§a已向管理员商店出售 " + amount + "个 ")
+                        .append(shop.getItem().getHoverName())
+                        .append(Component.literal("§a,获得 "
+                        + EconomyManager.getInstance().format(totalPayout) + "!")));
             }
         } else {
             // Check if shop owner can afford it
@@ -151,9 +153,9 @@ public class ShopTransactionHandler {
                             // Pay the seller
                             EconomyManager.getInstance().addBalance(player.getUUID(), finalPayout);
                             
-                            String itemName = shop.getItem().getHoverName().getString();
-                            player.sendSystemMessage(Component.literal("§a已向商店出售 " + finalAmount + "个 " + itemName
-                                    + ",获得 " + EconomyManager.getInstance().format(finalPayout) + "。"));
+                            player.sendSystemMessage(Component.literal("§a已向商店出售 " + finalAmount + "个 ")
+                                    .append(shop.getItem().getHoverName())
+                                    .append(Component.literal("§a,获得 " + EconomyManager.getInstance().format(finalPayout) + "。")));
 
                             BlockPos signPos = ShopSignHelper.findSignForChest(world, shop.getChestLocation());
                             if (signPos != null) {
