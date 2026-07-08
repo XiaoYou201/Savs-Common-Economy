@@ -77,6 +77,13 @@ public class ShopCommands {
             return 0;
         }
 
+        // Restrict shop creation to the player's own GOML claim (admins bypass).
+        boolean isAdmin = PermissionsHelper.check(context.getSource(), "savscommoneconomy.admin", 2);
+        if (!isAdmin && !ClaimGuard.canCreateShopAt(player.level(), pos, player.getUUID())) {
+            context.getSource().sendFailure(Component.literal("§c你只能在自己的领地内创建商店!"));
+            return 0;
+        }
+
         if (ShopManager.getInstance().getShop(pos) != null) {
             context.getSource().sendFailure(Component.literal("§c这里已经有一个商店了!"));
             return 0;
